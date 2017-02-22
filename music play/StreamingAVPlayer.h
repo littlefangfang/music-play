@@ -95,7 +95,8 @@
 @property (nonatomic, assign) NSInteger currentPlayIndex;
 
 #pragma mark - Life Cycle
-- (instancetype)initWithName:(NSString *)nameString;
++ (instancetype)shared;
+//- (instancetype)initWithName:(NSString *)nameString;
 
 #pragma mark - General Methods
 - (void)setPlayerName:(NSString *)nameString;

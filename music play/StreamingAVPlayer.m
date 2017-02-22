@@ -43,6 +43,7 @@
     // 锁屏时播放条的进度速率，暂停时需要设置为接近0的数
     float playbackRate;
 }
+static StreamingAVPlayer *_instance;
 @synthesize shouldPlay = _shouldPlay;
 @synthesize currentPlayIndex = _currentPlayIndex;
 
@@ -57,6 +58,15 @@
         [self setup];
     }
     return self;
+}
+
++ (instancetype)shared{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if(_instance == nil)
+            _instance = [[StreamingAVPlayer alloc] init];
+    });
+    return _instance;
 }
 
 
@@ -644,7 +654,11 @@
         NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
         
         //图片
-        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"123.jpg"]];
+//        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"123.jpg"]];
+        UIImage *img = [UIImage imageNamed:@"123.jpg"];
+        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:img.size requestHandler:^UIImage * _Nonnull(CGSize size) {
+            return img;
+        }];
         [songInfo setObject:albumArt forKey:MPMediaItemPropertyArtwork];
         
         //当前播放时间

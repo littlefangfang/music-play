@@ -24,14 +24,17 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
-        player = StreamingAVPlayer(name: "default")
+        
+        player = StreamingAVPlayer.shared()
+        player.stop()
         player.delegate = self
         
         let songArr = [url.absoluteString]
         let songNames = ["test"]
         let dirPath = ((NSHomeDirectory() as NSString).appendingPathComponent("Documents") as NSString).appendingPathComponent("Audios")
+        player.setPlayerName("default")
         player.setAudioFolderPath(dirPath, audioPaths: songArr, audioNames: songNames, start: 0)
+        playSong(playButton)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -42,8 +45,6 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        player.stop()
-        player = nil
         UIApplication.shared.endReceivingRemoteControlEvents()
         resignFirstResponder()
     }

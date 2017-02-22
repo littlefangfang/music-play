@@ -103,7 +103,7 @@
                     <connections>
                         <outlet property="collectionView" destination="uU6-eq-R37" id="az0-hc-2PW"/>
                         <outlet property="searchTextField" destination="eIx-pY-UJ0" id="bP0-9K-Lbk"/>
-                        <segue destination="qR9-7i-B4c" kind="push" identifier="show_music_list" id="DkR-93-lM7"/>
+                        <segue destination="qR9-7i-B4c" kind="show" identifier="show_music_list" id="DkR-93-lM7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -191,6 +191,11 @@
                                 <rect key="frame" x="0.0" y="587" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
+                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vfm-s2-wPK">
+                                        <rect key="frame" x="48" y="22" width="278" height="2"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="progressTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                    </progressView>
                                     <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="6KX-c5-ee4">
                                         <rect key="frame" x="46" y="8" width="282" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -232,11 +237,6 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vfm-s2-wPK">
-                                        <rect key="frame" x="48" y="22" width="278" height="2"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="progressTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                    </progressView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -269,6 +269,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="GpW-u0-pba"/>
+        <segue reference="DkR-93-lM7"/>
     </inferredMetricsTieBreakers>
 </document>
