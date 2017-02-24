@@ -88,8 +88,7 @@ static StreamingAVPlayer *_instance;
 
 - (void)setup
 {
-    currentPlayIndex = 0;
-    
+    currentPlayIndex = 0;    
 }
 
 // destroy
@@ -161,7 +160,7 @@ static StreamingAVPlayer *_instance;
 - (void)play
 {
     if (!timer) {
-        timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timeTicking:) userInfo:nil repeats:YES];
+        timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timeTicking:) userInfo:nil repeats:YES];
         [timer fire];
     }
     

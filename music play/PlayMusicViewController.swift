@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate {
+class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITableViewDataSource, UITableViewDelegate {
     
     
     @IBOutlet var downloadProgressView: UIProgressView!
@@ -16,14 +16,23 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate {
     @IBOutlet var currentTimeLabel: UILabel!
     @IBOutlet var remainingTimeLabel: UILabel!
     @IBOutlet var playButton: UIButton!
-    
+    @IBOutlet var lyricTable: UITableView!
+    @IBOutlet var coverImageView: UIImageView!
 
     var url: URL!
     var session: URLSession!
     var player: StreamingAVPlayer!
+    var songID: String?
+    var coverImagePath: String?
+    var lyricInfo: [[String: String]]?
+    var currentLine: Int!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        lyricTable.dataSource = self
+        lyricTable.delegate = self
+        currentLine = 0
         
         player = StreamingAVPlayer.shared()
         player.stop()
@@ -35,6 +44,7 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate {
         player.setPlayerName("default")
         player.setAudioFolderPath(dirPath, audioPaths: songArr, audioNames: songNames, start: 0)
         playSong(playButton)
+        getLrc()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,6 +81,54 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate {
         player.setProgressInTermsOfSeconds(sender.value)
     }
     
+    //MARK: - Helper
+    func getLrc() {
+        
+        let now = Date()
+        let dfm = DateFormatter()
+        dfm.dateFormat = "yyyyMMddHHmmss"
+        let dateStr = dfm.string(from: now)
+        
+        var path = String(format: "https://route.showapi.com/213-2?musicid=%@&showapi_appid=30499&showapi_timestamp=%@&showapi_sign=bd7693a43b504b91ab93edd5d7f1518e", songID!, dateStr)
+        path = path.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
+        let lrcURL = URL(string: path)!
+        
+        LyricTool.getLyricArrWithURL(url: lrcURL) { [unowned self] (lyricInfo) -> Void in
+            self.lyricInfo = lyricInfo
+            DispatchQueue.main.async { [unowned self] in
+                self.lyricTable.reloadData()
+            }
+        }
+    }
+    
+    func setCurrentPlayLineWith(str: String) {
+        if lyricInfo == nil {
+            return
+        }
+        
+        let dfm = DateFormatter()
+        dfm.dateFormat = "mm:ss.SS"
+        
+        let currentMusicTime = dfm.date(from: str)!
+        let currentLineTime = dfm.date(from: (lyricInfo?[currentLine]["time"])!)!
+        
+        if currentLine + 1 >= lyricInfo!.count {
+            return
+        }
+        
+        let nextLineTime = dfm.date(from: (lyricInfo?[currentLine + 1]["time"])!)!
+        
+        if currentLineTime.timeIntervalSince1970 < currentMusicTime.timeIntervalSince1970 && nextLineTime.timeIntervalSince1970 > currentMusicTime.timeIntervalSince1970 {
+            print(currentLine)
+        }else if currentLineTime.timeIntervalSince1970 < currentMusicTime.timeIntervalSince1970 {
+            currentLine = currentLine + 1
+            setCurrentPlayLineWith(str: str)
+        }else if currentLineTime.timeIntervalSince1970 > currentMusicTime.timeIntervalSince1970 {
+            currentLine = currentLine - 1
+            setCurrentPlayLineWith(str: str)
+        }
+    }
+    
     
     //MARK: - StreamingAVPlayerDelegate
     func streamAVPlayer(_ playerName: String!, updateAudioDuration seconds: Float) {
@@ -93,12 +151,46 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate {
     }
     
     func streamAVPlayer(_ playerName: String!, updateAudioDownloadDataLength length: Int, andDownloadPercentage percent: Float) {
-        downloadProgressView.setProgress(percent, animated: true)
+        if percent >= 0 && percent < 1 {
+            downloadProgressView.setProgress(percent, animated: true)
+        }else{
+            downloadProgressView.setProgress(1.0, animated: false)
+        }
     }
     
     func streamAVPlayer(_ playerName: String!, updateAudioPositionSeconds seconds: Float, andPositionPercentage percent: Float) {
         playProgressSlider.setValue(seconds, animated: true)
         currentTimeLabel.text = String(format: "%02d:%02d:%02d", Int(seconds) / 3600, Int(seconds) / 60 , Int(seconds) % 60)
+        
+        if lyricInfo != nil {
+            let currentTimeStr = String(format: "%02d:%02d.%02d", Int(seconds) / 60, Int(seconds) % 60, Int((seconds - Float(Int(seconds))) * 100))
+            setCurrentPlayLineWith(str: currentTimeStr)
+            lyricTable.scrollToRow(at: IndexPath(row: currentLine, section: 0), at: UITableViewScrollPosition.middle, animated: true)
+            
+            lyricTable.reloadData()
+            
+            let cell = lyricTable.cellForRow(at: IndexPath(row: currentLine, section: 0)) as? LyricCell
+            if cell != nil {
+                cell!.titleLabel.textColor = UIColor.red
+            }
+            
+        }
+        
+    }
+    
+    // MARK: - UITableViewDataSource
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if lyricInfo != nil {
+            return lyricInfo!.count
+        }
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = lyricTable.dequeueReusableCell(withIdentifier: "lrcCell", for: indexPath) as! LyricCell
+        cell.titleLabel.text = lyricInfo![indexPath.row]["content"]
+        cell.titleLabel.textColor = UIColor.black
+        return cell
     }
     
 
@@ -111,5 +203,8 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate {
         // Pass the selected object to the new view controller.
     }
     */
+}
 
+class LyricCell: UITableViewCell {
+    @IBOutlet var titleLabel: UILabel!
 }

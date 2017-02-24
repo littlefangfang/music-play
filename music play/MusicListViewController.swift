@@ -124,9 +124,15 @@ class MusicListViewController: UIViewController, UITableViewDataSource, UITableV
         // Pass the selected object to the new view controller.
         let vc = segue.destination as! PlayMusicViewController
         if isSearch == false {
-            vc.url = URL(string: ((dataArray?[sender as! Int] as! [String : AnyObject])["url"] as? String)!)
+            let info = dataArray?[sender as! Int] as! [String : AnyObject]
+            vc.url = URL(string: info["url"]! as! String)
+            vc.songID = info["songid"]?.stringValue
+            vc.coverImagePath = info["albumpic_big"] as! String?
         }else{
-            vc.url = URL(string: ((dataArray?[sender as! Int] as! [String : AnyObject])["m4a"] as? String)!)
+            let info = dataArray?[sender as! Int] as! [String : AnyObject]
+            vc.url = URL(string: info["m4a"]! as! String)
+            vc.songID = info["songid"]?.stringValue
+            vc.coverImagePath = info["albumpic_big"] as! String?
         }
     }
 

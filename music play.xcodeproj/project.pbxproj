@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7010B1781E582E470087A17A /* PlayMusicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7010B1771E582E470087A17A /* PlayMusicViewController.swift */; };
+		70CCD7231E5E8455009D2966 /* LyricTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70CCD7221E5E8455009D2966 /* LyricTool.swift */; };
 		70CFC2191E5AEFE3009D717C /* StreamingAVPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 70CFC2171E5AEFE3009D717C /* StreamingAVPlayer.m */; };
 		70E7C6CC1E5C263E00E94149 /* 123.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 70E7C6CB1E5C263E00E94149 /* 123.jpg */; };
 		70F8222F1E24B8F30001A337 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70F8222E1E24B8F30001A337 /* AppDelegate.swift */; };
@@ -41,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		7010B1771E582E470087A17A /* PlayMusicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayMusicViewController.swift; sourceTree = "<group>"; };
+		70CCD7221E5E8455009D2966 /* LyricTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LyricTool.swift; sourceTree = "<group>"; };
 		70CFC2121E5AEEE2009D717C /* music play-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "music play-Bridging-Header.h"; sourceTree = "<group>"; };
 		70CFC2171E5AEFE3009D717C /* StreamingAVPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StreamingAVPlayer.m; sourceTree = "<group>"; };
 		70CFC2181E5AEFE3009D717C /* StreamingAVPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamingAVPlayer.h; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				70F8225C1E24C2FA0001A337 /* MusicListViewController.swift */,
 				70F8225E1E24C3470001A337 /* MusicDetailTableViewCell.swift */,
 				7010B1771E582E470087A17A /* PlayMusicViewController.swift */,
+				70CCD7221E5E8455009D2966 /* LyricTool.swift */,
 				70F822321E24B8F30001A337 /* Main.storyboard */,
 				70F822351E24B8F30001A337 /* Assets.xcassets */,
 				70F822371E24B8F30001A337 /* LaunchScreen.storyboard */,
@@ -297,6 +300,7 @@
 				70CFC2191E5AEFE3009D717C /* StreamingAVPlayer.m in Sources */,
 				70F8225F1E24C3470001A337 /* MusicDetailTableViewCell.swift in Sources */,
 				70F822311E24B8F30001A337 /* ViewController.swift in Sources */,
+				70CCD7231E5E8455009D2966 /* LyricTool.swift in Sources */,
 				70F822611E24D5CC0001A337 /* MusicCategoryCollectionViewCell.swift in Sources */,
 				70F8222F1E24B8F30001A337 /* AppDelegate.swift in Sources */,
 				7010B1781E582E470087A17A /* PlayMusicViewController.swift in Sources */,

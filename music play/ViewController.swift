@@ -31,6 +31,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         // Do any additional setup after loading the view, typically from a nib.
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        // test - start
+//        let aStr = "&#32;"
+//        let bStr = "&#10;"
+//        
+//        let a = try! NSAttributedString(data: aStr.data(using: String.Encoding.utf8)!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
+//        let b = try! NSAttributedString(data: bStr.data(using: String.Encoding.utf8)!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
+//        print(a.string + "------" + b.string)
+//        if a == b {
+//            print("equal")
+//        }else{
+//            print("not equal")
+//        }
+        // test - end
+        
     }
 
     override func didReceiveMemoryWarning() {
