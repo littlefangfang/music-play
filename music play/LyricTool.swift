@@ -48,11 +48,21 @@ class LyricTool: NSObject {
                     if strArr.count > 1 {
                         content = strArr[1]
                     }
-                    if timeStr.contains("0") && !timeStr.contains("offset") {
-                        dic["time"] = timeStr
-                        dic["content"] = content
-                        lyricInfoArr.append(dic)
+                    
+                    let pattern = "\\d{2}:\\d{2}.\\d{2}"
+                    do {
+                        let regular = try NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
+                        let matchCount = regular.numberOfMatches(in: timeStr, options: NSRegularExpression.MatchingOptions.reportCompletion, range: NSMakeRange(0, timeStr.characters.count))
+                        
+                        if matchCount > 0 {
+                            dic["time"] = timeStr
+                            dic["content"] = content
+                            lyricInfoArr.append(dic)
+                        }
+                    }catch{
+                        print("match time error")
                     }
+                    
                 }
                 completeHandler(lyricInfoArr)
             }catch {
