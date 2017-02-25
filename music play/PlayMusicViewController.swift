@@ -93,10 +93,10 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         path = path.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
         let lrcURL = URL(string: path)!
         
-        LyricTool.getLyricArrWithURL(url: lrcURL) { [unowned self] (lyricInfo) -> Void in
-            self.lyricInfo = lyricInfo
-            DispatchQueue.main.async { [unowned self] in
-                self.lyricTable.reloadData()
+        LyricTool.getLyricArrWithURL(url: lrcURL) { [weak self] (lyricInfo) -> Void in
+            self?.lyricInfo = lyricInfo
+            DispatchQueue.main.async { [weak self] in
+                self?.lyricTable.reloadData()
             }
         }
     }
@@ -104,6 +104,10 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
     func setCurrentPlayLineWith(str: String) {
         if lyricInfo == nil {
             return
+        }
+        
+        if currentLine < 0 {
+            currentLine = 0
         }
         
         let dfm = DateFormatter()
@@ -120,10 +124,10 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         
         if currentLineTime.timeIntervalSince1970 < currentMusicTime.timeIntervalSince1970 && nextLineTime.timeIntervalSince1970 > currentMusicTime.timeIntervalSince1970 {
             print(currentLine)
-        }else if currentLineTime.timeIntervalSince1970 < currentMusicTime.timeIntervalSince1970 {
+        }else if currentLineTime.timeIntervalSince1970 <= currentMusicTime.timeIntervalSince1970 {
             currentLine = currentLine + 1
             setCurrentPlayLineWith(str: str)
-        }else if currentLineTime.timeIntervalSince1970 > currentMusicTime.timeIntervalSince1970 {
+        }else if currentLineTime.timeIntervalSince1970 >= nextLineTime.timeIntervalSince1970 {
             currentLine = currentLine - 1
             setCurrentPlayLineWith(str: str)
         }

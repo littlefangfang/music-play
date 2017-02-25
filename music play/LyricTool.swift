@@ -34,9 +34,13 @@ class LyricTool: NSObject {
                 let d = str.data(using: String.Encoding.utf8)
                 
                 let json = try JSONSerialization.jsonObject(with: d!, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String : AnyObject]
-                let lyric = (json["showapi_res_body"] as! [String : AnyObject])["lyric"]  as! String
+                let lyric = (json["showapi_res_body"] as! [String : AnyObject])["lyric"]  as? String
                 
-                let lyricArr = lyric.components(separatedBy: "~~~I am a separate line~~~")
+                if lyric == nil {
+                    return
+                }
+                
+                let lyricArr = lyric!.components(separatedBy: "~~~I am a separate line~~~")
                 var lyricInfoArr = [[String: String]]()
                 
                 for str in lyricArr {
