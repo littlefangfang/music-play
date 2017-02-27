@@ -685,6 +685,7 @@ static StreamingAVPlayer *_instance;
     [self setPlayingInfo]; //后台播放显示信息设置
     float currentSeconds = CMTimeGetSeconds([player currentTime]);
     [self updateAudioPosition:currentSeconds >= 0 ? currentSeconds : 0.0f];
+    _currentTime = currentSeconds;
 }
 
 /**

@@ -94,6 +94,12 @@
  */
 @property (nonatomic, assign) NSInteger currentPlayIndex;
 
+
+/**
+ 当前播放时间
+ */
+@property (nonatomic, assign) float currentTime;
+
 #pragma mark - Life Cycle
 + (instancetype)shared;
 //- (instancetype)initWithName:(NSString *)nameString;

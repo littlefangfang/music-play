@@ -135,6 +135,10 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
             return
         }
         
+        if player.currentTime == 0 {
+            return
+        }
+        
         if currentLine < 0 {
             currentLine = 0
         }
