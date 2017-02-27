@@ -45,6 +45,7 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         player.setAudioFolderPath(dirPath, audioPaths: songArr, audioNames: songNames, start: 0)
         playSong(playButton)
         getLrc()
+        getAlbumCover()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -82,7 +83,35 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
     }
     
     //MARK: - Helper
-    func getLrc() {
+    fileprivate func getAlbumCover() {
+        if coverImagePath != nil {
+            let imgName = (coverImagePath! as NSString).lastPathComponent
+            let path = ((NSHomeDirectory() as NSString).appendingPathComponent("Documents") as NSString).appendingPathComponent(imgName)
+            let img = UIImage(contentsOfFile: path)
+            
+            if img == nil {
+                DispatchQueue.global().async {[unowned self] in
+                    let imgUrl = URL(string: self.coverImagePath!)
+                    do {
+                        let imgData = try Data(contentsOf: imgUrl!)
+                        (imgData as NSData).write(toFile: path, atomically: true)
+                        
+                        DispatchQueue.main.async { [unowned self] in
+                            self.coverImageView.image = UIImage(data: imgData)
+                        }
+                        
+                    }catch {
+                        print("get image error")
+                    }
+                }
+            }else{
+                coverImageView.image = img
+            }
+            
+        }
+    }
+    
+    fileprivate func getLrc() {
         
         let now = Date()
         let dfm = DateFormatter()
@@ -101,7 +130,7 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         }
     }
     
-    func setCurrentPlayLineWith(str: String) {
+    fileprivate func setCurrentPlayLineWith(str: String) {
         if lyricInfo == nil {
             return
         }
@@ -123,12 +152,12 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         let nextLineTime = dfm.date(from: (lyricInfo?[currentLine + 1]["time"])!)!
         
         if currentLineTime.timeIntervalSince1970 < currentMusicTime.timeIntervalSince1970 && nextLineTime.timeIntervalSince1970 > currentMusicTime.timeIntervalSince1970 {
-            print(currentLine)
-        }else if currentLineTime.timeIntervalSince1970 <= currentMusicTime.timeIntervalSince1970 {
-            currentLine = currentLine + 1
-            setCurrentPlayLineWith(str: str)
-        }else if currentLineTime.timeIntervalSince1970 >= nextLineTime.timeIntervalSince1970 {
+//            print(currentLine)
+        }else if currentMusicTime.timeIntervalSince1970 <= currentLineTime.timeIntervalSince1970 {
             currentLine = currentLine - 1
+            setCurrentPlayLineWith(str: str)
+        }else if currentMusicTime.timeIntervalSince1970 >= nextLineTime.timeIntervalSince1970 {
+            currentLine = currentLine + 1
             setCurrentPlayLineWith(str: str)
         }
     }

@@ -28,6 +28,7 @@ class MusicListViewController: UIViewController, UITableViewDataSource, UITableV
         tableView.dataSource = self
         
         loadMusicList()
+        
     }
     
     
