@@ -42,7 +42,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 //        if a == b {
 //            print("equal")
 //        }else{
-//            print("not equal")
+//            print("diffrent")
 //        }
         // test - end
         

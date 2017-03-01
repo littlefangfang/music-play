@@ -122,7 +122,7 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         path = path.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
         let lrcURL = URL(string: path)!
         
-        LyricTool.getLyricArrWithURL(url: lrcURL) { [weak self] (lyricInfo) -> Void in
+        LyricTool.getLyricArrWithURL(url: lrcURL, songID: songID!) { [weak self] (lyricInfo) -> Void in
             self?.lyricInfo = lyricInfo
             DispatchQueue.main.async { [weak self] in
                 self?.lyricTable.reloadData()
@@ -139,8 +139,8 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
             return
         }
         
-        if currentLine < 0 {
-            currentLine = 0
+        if currentLine <= 0 {
+            currentLine = 1
         }
         
         let dfm = DateFormatter()
@@ -155,11 +155,13 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         
         let nextLineTime = dfm.date(from: (lyricInfo?[currentLine + 1]["time"])!)!
         
-        if currentLineTime.timeIntervalSince1970 < currentMusicTime.timeIntervalSince1970 && nextLineTime.timeIntervalSince1970 > currentMusicTime.timeIntervalSince1970 {
+        if currentLineTime.timeIntervalSince1970 <= currentMusicTime.timeIntervalSince1970 && nextLineTime.timeIntervalSince1970 > currentMusicTime.timeIntervalSince1970 {
 //            print(currentLine)
-        }else if currentMusicTime.timeIntervalSince1970 <= currentLineTime.timeIntervalSince1970 {
+        }else if currentMusicTime.timeIntervalSince1970 < currentLineTime.timeIntervalSince1970 {
             currentLine = currentLine - 1
-            setCurrentPlayLineWith(str: str)
+            
+//            print(currentLine)
+//            setCurrentPlayLineWith(str: str)
         }else if currentMusicTime.timeIntervalSince1970 >= nextLineTime.timeIntervalSince1970 {
             currentLine = currentLine + 1
             setCurrentPlayLineWith(str: str)
@@ -210,9 +212,7 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
             if cell != nil {
                 cell!.titleLabel.textColor = UIColor.red
             }
-            
         }
-        
     }
     
     // MARK: - UITableViewDataSource
