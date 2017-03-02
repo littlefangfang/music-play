@@ -24,8 +24,9 @@
 
  @param playerName 播放器的名字。当控制器中有多个播放器时，用来区别播放器
  @param audioName 音频名字。当前播放的音频的显示名字
+ @param idx 当前播放的音频在数组中的index
  */
-- (void)streamAVPlayer:(NSString *)playerName updateAudioName:(NSString *)audioName;
+- (void)streamAVPlayer:(NSString *)playerName updateAudioName:(NSString *)audioName andCurrentPlayIndex:(NSInteger)idx;
 
 
 /**
@@ -100,6 +101,12 @@
  */
 @property (nonatomic, assign) float currentTime;
 
+
+/**
+ 封面图片
+ */
+@property (nonatomic, retain) UIImage *coverImage;
+
 #pragma mark - Life Cycle
 + (instancetype)shared;
 //- (instancetype)initWithName:(NSString *)nameString;
@@ -108,7 +115,7 @@
 - (void)setPlayerName:(NSString *)nameString;
 
 #pragma mark - Set Audio Source (Methods)
-- (void)setAudioFolderPath:(NSString *)path audioPaths:(NSArray *)auds audioNames:(NSArray *)audNames startIndex:(NSInteger)idx;
+- (void)setAudioFolderPath:(NSString *)path audioPaths:(NSArray *)auds audioNames:(NSArray *)audNames singerNames:(NSArray *)singerNames startIndex:(NSInteger)idx;
 
 #pragma mark - Console (Methods)
 - (void)play;

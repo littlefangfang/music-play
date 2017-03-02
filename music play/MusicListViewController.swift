@@ -18,6 +18,7 @@ class MusicListViewController: UIViewController, UITableViewDataSource, UITableV
     var hasNext = false
     var keyword : String?
     var nextPage : Int?
+    var songInfoArr: [[String: String]]!
     
     
     override func viewDidLoad() {
@@ -28,7 +29,6 @@ class MusicListViewController: UIViewController, UITableViewDataSource, UITableV
         tableView.dataSource = self
         
         loadMusicList()
-        
     }
     
     
@@ -58,6 +58,33 @@ class MusicListViewController: UIViewController, UITableViewDataSource, UITableV
                         self.hasNext = true
                         self.nextPage = currentPage + 1
                     }
+                }
+                
+                self.songInfoArr = [[String: String]]()
+                
+                for i in 0..<self.dataArray!.count {
+                    let info = self.dataArray?[i] as! [String : AnyObject]
+                    var tempDic = [String: String]()
+                    
+                    var url: String
+                    if info["url"] != nil {
+                        url = info["url"] as! String
+                    }else{
+                        url = info["m4a"] as! String
+                    }
+                    
+                    let songID = info["songid"]?.stringValue
+                    let coverImagePath = info["albumpic_big"] as! String
+                    let songName = info["songname"] as! String
+                    let singerName = info["singername"] as! String
+                    
+                    tempDic["url"] = url
+                    tempDic["songID"] = songID
+                    tempDic["coverImagePath"] = coverImagePath
+                    tempDic["songName"] = songName
+                    tempDic["singerName"] = singerName
+                    
+                    self.songInfoArr.append(tempDic)
                 }
                 
                 DispatchQueue.main.async {
@@ -124,17 +151,16 @@ class MusicListViewController: UIViewController, UITableViewDataSource, UITableV
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         let vc = segue.destination as! PlayMusicViewController
-        if isSearch == false {
-            let info = dataArray?[sender as! Int] as! [String : AnyObject]
-            vc.url = URL(string: info["url"]! as! String)
-            vc.songID = info["songid"]?.stringValue
-            vc.coverImagePath = info["albumpic_big"] as! String?
-        }else{
-            let info = dataArray?[sender as! Int] as! [String : AnyObject]
-            vc.url = URL(string: info["m4a"]! as! String)
-            vc.songID = info["songid"]?.stringValue
-            vc.coverImagePath = info["albumpic_big"] as! String?
-        }
+//        let info = dataArray?[sender as! Int] as! [String : AnyObject]
+//        if isSearch == false {
+//            vc.url = URL(string: info["url"]! as! String)
+//        }else{
+//            vc.url = URL(string: info["m4a"]! as! String)
+//        }
+//        vc.songID = info["songid"]?.stringValue
+//        vc.coverImagePath = info["albumpic_big"] as! String?
+        vc.songInfoArr = songInfoArr
+        vc.playIndex = sender as! Int
     }
 
 

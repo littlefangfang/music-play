@@ -131,7 +131,7 @@
                                         <rect key="frame" x="0.0" y="28" width="375" height="76"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bBR-ql-dZw" id="3kn-e8-JfM">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="75"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="76"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m54-qY-N37">
@@ -224,6 +224,9 @@
                                             <constraint firstAttribute="height" constant="30" id="U4S-Ct-zO1"/>
                                         </constraints>
                                         <state key="normal" title="下一首"/>
+                                        <connections>
+                                            <action selector="playNext:" destination="Bje-Ka-egy" eventType="touchUpInside" id="gXm-lI-zSK"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mFI-Aa-piB">
                                         <rect key="frame" x="109" y="42" width="46" height="30"/>
@@ -232,6 +235,9 @@
                                             <constraint firstAttribute="width" constant="46" id="WLd-qr-Icf"/>
                                         </constraints>
                                         <state key="normal" title="上一首"/>
+                                        <connections>
+                                            <action selector="playPrevious:" destination="Bje-Ka-egy" eventType="touchUpInside" id="Uqy-SI-Uup"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5fA-eV-mIn">
                                         <rect key="frame" x="8" y="46" width="72" height="21"/>
@@ -283,7 +289,7 @@
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="36" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="2IW-3m-DV9">
                                         <rect key="frame" x="343" y="0.0" width="343" height="507"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="507" id="EIB-Yy-DG0"/>
                                             <constraint firstAttribute="width" constant="343" id="fFZ-kO-S0J"/>

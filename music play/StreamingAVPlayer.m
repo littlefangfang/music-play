@@ -19,7 +19,7 @@
     
     NSString *localAudioFolderPath;
     
-    NSArray *audioPaths, *audioNames;
+    NSArray *audioPaths, *audioNames, *singerNames;
     
     NSTimer *timer;
     
@@ -42,10 +42,14 @@
     
     // 锁屏时播放条的进度速率，暂停时需要设置为接近0的数
     float playbackRate;
+    
+    UIImage *coverImage;
 }
 static StreamingAVPlayer *_instance;
+
 @synthesize shouldPlay = _shouldPlay;
 @synthesize currentPlayIndex = _currentPlayIndex;
+@synthesize coverImage = _coverImage;
 
 #pragma mark - Life Cycle
 
@@ -116,7 +120,7 @@ static StreamingAVPlayer *_instance;
  @param audNames 音频的显示名，显示名的数量需要与auds的数量相等
  @param idx 从第几个音频开始播放
  */
-- (void)setAudioFolderPath:(NSString *)path audioPaths:(NSArray *)auds audioNames:(NSArray *)audNames startIndex:(NSInteger)idx
+- (void)setAudioFolderPath:(NSString *)path audioPaths:(NSArray *)auds audioNames:(NSArray *)audNames singerNames:(NSArray *)singers startIndex:(NSInteger)idx
 {
     if (!path) {
         setDataSourceOK = NO;
@@ -144,6 +148,7 @@ static StreamingAVPlayer *_instance;
     localAudioFolderPath = path;
     audioPaths = auds;
     audioNames = audNames;
+    singerNames = singers;
     currentPlayIndex = idx;
     
     setDataSourceOK = YES;
@@ -185,7 +190,6 @@ static StreamingAVPlayer *_instance;
             AVPlayerItem *playerItem = [self getPlayerItemFromhURL:audURL];
             player = [[AVPlayer alloc] initWithPlayerItem:playerItem];
             [self addObserverToPlayerItem:playerItem];
-            
         }
     }
     
@@ -308,8 +312,8 @@ static StreamingAVPlayer *_instance;
 - (void)updateAudioName
 {
     NSString *audName = [audioNames objectAtIndex:currentPlayIndex];
-    if (_delegate && [_delegate respondsToSelector:@selector(streamAVPlayer:updateAudioName:)]) {
-        [_delegate streamAVPlayer:name updateAudioName:audName];
+    if (_delegate && [_delegate respondsToSelector:@selector(streamAVPlayer:updateAudioName: andCurrentPlayIndex:)]) {
+        [_delegate streamAVPlayer:name updateAudioName:audName andCurrentPlayIndex:currentPlayIndex];
     }
 }
 
@@ -654,9 +658,9 @@ static StreamingAVPlayer *_instance;
         
         //图片
 //        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"123.jpg"]];
-        UIImage *img = [UIImage imageNamed:@"123.jpg"];
-        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:img.size requestHandler:^UIImage * _Nonnull(CGSize size) {
-            return img;
+        
+        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:coverImage.size requestHandler:^UIImage * _Nonnull(CGSize size) {
+            return coverImage;
         }];
         [songInfo setObject:albumArt forKey:MPMediaItemPropertyArtwork];
         
@@ -670,10 +674,10 @@ static StreamingAVPlayer *_instance;
         [songInfo setObject:[NSNumber numberWithDouble:CMTimeGetSeconds(player.currentItem.duration)] forKey:MPMediaItemPropertyPlaybackDuration];
         
         //设置标题
-//        [songInfo setObject:[audioNames objectAtIndex:currentPlayIndex] forKey:MPMediaItemPropertyTitle];
+        [songInfo setObject:[audioNames objectAtIndex:currentPlayIndex] forKey:MPMediaItemPropertyTitle];
         
         //设置副标题
-//        [songInfo setObject:@"古兰经 - 副标题" forKey:MPMediaItemPropertyArtist];
+        [songInfo setObject:[singerNames objectAtIndex:currentPlayIndex] forKey:MPMediaItemPropertyArtist];
         
         //设置音频数据信息
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:songInfo];

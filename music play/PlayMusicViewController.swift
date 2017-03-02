@@ -19,13 +19,13 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
     @IBOutlet var lyricTable: UITableView!
     @IBOutlet var coverImageView: UIImageView!
 
-    var url: URL!
     var session: URLSession!
     var player: StreamingAVPlayer!
-    var songID: String?
-    var coverImagePath: String?
     var lyricInfo: [[String: String]]?
     var currentLine: Int!
+    var songInfoArr: [[String: String]]?
+    var playIndex: Int!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,14 +38,26 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         player.stop()
         player.delegate = self
         
-        let songArr = [url.absoluteString]
-        let songNames = ["test"]
+        var songArr = [String]()
+        var songNames = [String]()
+        var singerNames = [String]()
+        
+        for i in 0..<songInfoArr!.count {
+            let songInfoDic = songInfoArr![i]
+            let songUrl = songInfoDic["url"]!
+            let songName = songInfoDic["songName"]!
+            let singerName = songInfoDic["singerName"]!
+            songArr.append(songUrl)
+            songNames.append(songName)
+            singerNames.append(singerName)
+        }
+//        let songArr = [url.absoluteString]
+//        let songNames = ["test"]
         let dirPath = ((NSHomeDirectory() as NSString).appendingPathComponent("Documents") as NSString).appendingPathComponent("Audios")
         player.setPlayerName("default")
-        player.setAudioFolderPath(dirPath, audioPaths: songArr, audioNames: songNames, start: 0)
+        player.setAudioFolderPath(dirPath, audioPaths: songArr, audioNames: songNames, singerNames: singerNames, start: playIndex)
         playSong(playButton)
-        getLrc()
-        getAlbumCover()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -82,47 +94,57 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         player.setProgressInTermsOfSeconds(sender.value)
     }
     
-    //MARK: - Helper
-    fileprivate func getAlbumCover() {
-        if coverImagePath != nil {
-            let imgName = (coverImagePath! as NSString).lastPathComponent
-            let path = ((NSHomeDirectory() as NSString).appendingPathComponent("Documents") as NSString).appendingPathComponent(imgName)
-            let img = UIImage(contentsOfFile: path)
-            
-            if img == nil {
-                DispatchQueue.global().async {[unowned self] in
-                    let imgUrl = URL(string: self.coverImagePath!)
-                    do {
-                        let imgData = try Data(contentsOf: imgUrl!)
-                        (imgData as NSData).write(toFile: path, atomically: true)
-                        
-                        DispatchQueue.main.async { [unowned self] in
-                            self.coverImageView.image = UIImage(data: imgData)
-                        }
-                        
-                    }catch {
-                        print("get image error")
-                    }
-                }
-            }else{
-                coverImageView.image = img
-            }
-            
-        }
+    @IBAction func playPrevious(_ sender: Any) {
+        player.previous()
     }
     
-    fileprivate func getLrc() {
+    @IBAction func playNext(_ sender: Any) {
+        player.next()
+    }
+    
+    //MARK: - Helper
+    fileprivate func getAlbumCover(coverImagePath: String) {
+        
+        let imgName = (coverImagePath as NSString).lastPathComponent
+        let path = ((NSHomeDirectory() as NSString).appendingPathComponent("Documents") as NSString).appendingPathComponent(imgName)
+        let img = UIImage(contentsOfFile: path)
+        
+        if img == nil {
+            DispatchQueue.global().async {[unowned self] in
+                let imgUrl = URL(string: coverImagePath)
+                do {
+                    let imgData = try Data(contentsOf: imgUrl!)
+                    (imgData as NSData).write(toFile: path, atomically: true)
+                    
+                    DispatchQueue.main.async { [unowned self] in
+                        self.coverImageView.image = UIImage(data: imgData)
+                        self.player.coverImage = UIImage(data: imgData)
+                    }
+                    
+                }catch {
+                    print("get image error")
+                }
+            }
+        }else{
+            coverImageView.image = img
+            player.coverImage = img
+        }
+            
+        
+    }
+    
+    fileprivate func getLrc(songID: String) {
         
         let now = Date()
         let dfm = DateFormatter()
         dfm.dateFormat = "yyyyMMddHHmmss"
         let dateStr = dfm.string(from: now)
         
-        var path = String(format: "https://route.showapi.com/213-2?musicid=%@&showapi_appid=30499&showapi_timestamp=%@&showapi_sign=bd7693a43b504b91ab93edd5d7f1518e", songID!, dateStr)
+        var path = String(format: "https://route.showapi.com/213-2?musicid=%@&showapi_appid=30499&showapi_timestamp=%@&showapi_sign=bd7693a43b504b91ab93edd5d7f1518e", songID, dateStr)
         path = path.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
         let lrcURL = URL(string: path)!
         
-        LyricTool.getLyricArrWithURL(url: lrcURL, songID: songID!) { [weak self] (lyricInfo) -> Void in
+        LyricTool.getLyricArrWithURL(url: lrcURL, songID: songID) { [weak self] (lyricInfo) -> Void in
             self?.lyricInfo = lyricInfo
             DispatchQueue.main.async { [weak self] in
                 self?.lyricTable.reloadData()
@@ -159,7 +181,6 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
 //            print(currentLine)
         }else if currentMusicTime.timeIntervalSince1970 < currentLineTime.timeIntervalSince1970 {
             currentLine = currentLine - 1
-            
 //            print(currentLine)
 //            setCurrentPlayLineWith(str: str)
         }else if currentMusicTime.timeIntervalSince1970 >= nextLineTime.timeIntervalSince1970 {
@@ -176,8 +197,16 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         remainingTimeLabel.text = String(format: "%02d:%02d:%02d", Int(seconds) / 3600, Int(seconds) / 60 , Int(seconds) % 60)
     }
     
-    func streamAVPlayer(_ playerName: String!, updateAudioName audioName: String!) {
-        print("now play:" + playerName)
+    func streamAVPlayer(_ playerName: String!, updateAudioName audioName: String!, andCurrentPlay idx: Int) {
+        print("now play:" + audioName)
+        if songInfoArr != nil {
+            let currentSongInfoDic = songInfoArr![idx]
+            let songId = currentSongInfoDic["songID"]!
+            let coverImagePath = currentSongInfoDic["coverImagePath"]!
+            currentLine = 1
+            getLrc(songID: songId)
+            getAlbumCover(coverImagePath: coverImagePath)
+        }
     }
     
     func streamAVPlayer(_ playerName: String!, updatePlayerStatus status: String!) {
