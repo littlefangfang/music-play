@@ -76,6 +76,24 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         return true
     }
     
+    override func remoteControlReceived(with event: UIEvent?) {
+        if event?.type == UIEventType.remoteControl {
+            switch event!.subtype {
+            case UIEventSubtype.remoteControlPlay:
+                playSong(playButton)
+            case UIEventSubtype.remoteControlPause:
+                playSong(playButton)
+            case UIEventSubtype.remoteControlNextTrack:
+                playNext(nil)
+            case UIEventSubtype.remoteControlPreviousTrack:
+                playPrevious(nil)
+            default:
+                print("...")
+            }
+        }
+    }
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -94,11 +112,11 @@ class PlayMusicViewController: UIViewController, StreamingAVPlayerDelegate, UITa
         player.setProgressInTermsOfSeconds(sender.value)
     }
     
-    @IBAction func playPrevious(_ sender: Any) {
+    @IBAction func playPrevious(_ sender: Any?) {
         player.previous()
     }
     
-    @IBAction func playNext(_ sender: Any) {
+    @IBAction func playNext(_ sender: Any?) {
         player.next()
     }
     

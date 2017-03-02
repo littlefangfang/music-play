@@ -659,8 +659,8 @@ static StreamingAVPlayer *_instance;
         //图片
 //        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"123.jpg"]];
         
-        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:coverImage.size requestHandler:^UIImage * _Nonnull(CGSize size) {
-            return coverImage;
+        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:_coverImage.size requestHandler:^UIImage * _Nonnull(CGSize size) {
+            return _coverImage;
         }];
         [songInfo setObject:albumArt forKey:MPMediaItemPropertyArtwork];
         
